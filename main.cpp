@@ -69,8 +69,14 @@ int main(int argc, char *argv[]){
 		//}
 
 		printf("\n--tcp header--\n");
-		tcp_hdr = (struct tcphdr *)(packet + sizeof(struct ethernet_hdr));
+		tcp_hdr = (struct tcphdr *)(packet + sizeof(struct ethernet_hdr) + sizeof(struct ip));
 		printf("src port : %d\n", ntohs(tcp_hdr->source));
+		printf("dst port : %d\n", ntohs(tcp_hdr->dest));
+
+		printf("\n--packet header--\n");
+		printf("ha..");
+
+	pcap_close(handle);
 
 	}
 
