@@ -59,10 +59,11 @@ int main(int argc, char *argv[]){
 		}
 
 		printf("\n--Ipv4 Header--\n");
-		packet += sizeof(struct ethernet_hdr);
+		//packet += sizeof(struct ethernet_hdr);
 		ipv4_hdr = (struct ipv4_hdr *) packet;
 		printf("src : %s\n", inet_ntoa(ipv4_hdr->ip_src));
 		printf("dst : %s\n", inet_ntoa(ipv4_hdr->ip_dst));
+		//printf("sibal....");
 		
 		printf("\n--tcp header--\n");
 		printf("test\n");
