@@ -15,7 +15,7 @@ struct ethernet_hdr
 };
 
 struct ip *ipv4_hdr;
-struct tcp *tcp_hdr;
+struct tcphdr *tcp_hdr;
 
 int main(int argc, char *argv[]){
 	if(argc < 2){
@@ -36,6 +36,8 @@ int main(int argc, char *argv[]){
 	while(true){
 		struct pcap_pkthdr* header;
 		struct ethernet_hdr *eth_hdr;
+		struct ip *ipv4_hdr;
+		struct tcphdr *tcp_hdr;
 		const u_char* packet;
 		int res = pcap_next_ex(handle, &header, &packet);
 		if(res == 0){
@@ -67,11 +69,12 @@ int main(int argc, char *argv[]){
 		//}
 
 		printf("\n--tcp header--\n");
-		printf("test\n");
-
+		tcp_hdr = (struct tcphdr *)(packet + sizeof(struct ethernet_hdr));
+		printf("src port : %d\n", ntohs(tcp_hdr->source));
 
 	}
 
 
 	return 0;
+
 }
