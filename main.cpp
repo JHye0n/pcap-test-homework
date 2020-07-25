@@ -3,19 +3,19 @@
 #include <libnet.h>
 #include <stdint.h>
 #include <netinet/in.h>
+#include <netinet/ip.h>
+#include <netinet/tcp.h>
+//#include <rte_ip.h>
 
 struct ethernet_hdr
 {
-    u_int8_t  ether_dhost[ETHER_ADDR_LEN];/* destination ethernet address */
-    u_int8_t  ether_shost[ETHER_ADDR_LEN];/* source ethernet address */
-    u_int16_t ether_type;                 /* protocol */
+    uint8_t  ether_dhost[ETHER_ADDR_LEN];/* destination ethernet address */
+    uint8_t  ether_shost[ETHER_ADDR_LEN];/* source ethernet address */
+    uint16_t ether_type;                 /* protocol */
 };
 
-struct ipv4_hdr
-{
-	struct in_addr ip_src, ip_dst;
-};
-
+struct ip *ipv4_hdr;
+struct tcp *tcp_hdr;
 
 int main(int argc, char *argv[]){
 	if(argc < 2){
@@ -36,7 +36,6 @@ int main(int argc, char *argv[]){
 	while(true){
 		struct pcap_pkthdr* header;
 		struct ethernet_hdr *eth_hdr;
-		struct ipv4_hdr *ipv4_hdr;
 		const u_char* packet;
 		int res = pcap_next_ex(handle, &header, &packet);
 		if(res == 0){
@@ -59,12 +58,14 @@ int main(int argc, char *argv[]){
 		}
 
 		printf("\n--Ipv4 Header--\n");
-		//packet += sizeof(struct ethernet_hdr);
-		ipv4_hdr = (struct ipv4_hdr *) packet;
+		ipv4_hdr = (struct ip *) (packet + sizeof(struct ethernet_hdr));
+		//for(int k=0; k<4; k++){
 		printf("src : %s\n", inet_ntoa(ipv4_hdr->ip_src));
+		//}
+		//for(int z=0; z<4; z++){
 		printf("dst : %s\n", inet_ntoa(ipv4_hdr->ip_dst));
-		//printf("sibal....");
-		
+		//}
+
 		printf("\n--tcp header--\n");
 		printf("test\n");
 
