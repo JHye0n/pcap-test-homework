@@ -15,14 +15,6 @@ struct ethernet_hdr
 };
 
 struct ip *ipv4_hdr;
-/*struct ipv4_hdr
-{
-	struct in_addr
-	{
-		uint8_t ip_src;
-	};
-};*/
-//struct tcphdr *tcp_hdr;
 struct tcp_hdr
 {
     u_int16_t th_sport;       /* source port */
