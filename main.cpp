@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
 		struct ethernet_hdr *eth_hdr;
 		struct ip *ipv4_addr;
 		struct tcp_hdr *tcp_addr;
-		const char *pkdata;
+		const u_char *pkdata;
 		const u_char* packet;
 		int res = pcap_next_ex(handle, &header, &packet);
 		if(res == 0){
@@ -90,7 +90,7 @@ int main(int argc, char *argv[]){
 
 		
 		
-		pkdata = (char *)(packet + sizeof(struct ethernet_hdr) + sizeof(struct ip) + sizeof(tcp_hdr));
+		pkdata = (u_char *)(packet + sizeof(struct ethernet_hdr) + sizeof(struct ip) + sizeof(tcp_hdr));
 		for(int a=0; a<16; a++){
 			printf("|%02x|",pkdata[a]);
 		}
