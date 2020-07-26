@@ -81,8 +81,9 @@ int main(int argc, char *argv[]){
 
 		printf("\n--payload(data)--\n");
 		payload = (u_char *)(packet + sizeof(ethernet_hdr) + sizeof(struct ip) + sizeof(tcp_hdr));
+		payload += 16;
 
-            	for(int a=0; a<32; a++){
+            	for(int a=0; a<16; a++){
 			printf("|%02x|", payload[a]);
 		}
 		printf("\n--end--\n");
