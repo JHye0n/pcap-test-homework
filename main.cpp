@@ -89,13 +89,9 @@ int main(int argc, char *argv[]){
 
 		printf("\n--payload(data)--\n");
 		payload = (u_char *)(packet + sizeof(ethernet_hdr) + sizeof(struct ip) + sizeof(tcp_hdr));
-		payload_len = header->caplen - (sizeof(struct ethernet_hdr) + sizeof(struct ip) + sizeof(struct tcp_hdr));
-		printf("len: %d\n", payload_len);
 
-            	for(int a=0; a<payload_len; a++){
-			if(a<32){
-				printf("|%02x|", payload[a]);
-			}
+            	for(int a=0; a<32; a++){
+			printf("|%02x|", payload[a]);
 		}
 		printf("\n--end--\n");
 
