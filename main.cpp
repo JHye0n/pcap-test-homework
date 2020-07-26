@@ -11,7 +11,7 @@ struct ethernet_hdr
 {
     uint8_t  ether_dhost[ETHER_ADDR_LEN];/* destination ethernet address */
     uint8_t  ether_shost[ETHER_ADDR_LEN];/* source ethernet address */
-    uint16_t ether_type;                 /* protocol */
+    uint16_t  ether_type;              /* protocol */
 };
 
 struct ip *ipv4_hdr;
@@ -41,18 +41,19 @@ int main(int argc, char *argv[]){
 
 	handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
 	if(handle == NULL){
-		fprintf(stderr, "no found network interfaces %s: %s\n",dev, errbuf);
+		printf("no found network interfaces %s: %s\n",dev, errbuf);
 		return 0;
 	}
 
 	while(true){
 		struct pcap_pkthdr* header;
 		struct ethernet_hdr *eth_hdr;
-		struct ip *ipv4_addr;
+		struct ip *ipv4_hdr;
 		struct tcp_hdr *tcp_addr;
-		const u_char* pkdata;
-		const u_char* packet;
+		const u_char *packet;
+		const u_char *payload;
 		int res = pcap_next_ex(handle, &header, &packet);
+		int payload_len = 0;
 		if(res == 0){
 			continue;
 		}else if(res == -1 || res == -2){
@@ -60,7 +61,7 @@ int main(int argc, char *argv[]){
 			exit(-1);
 		}
 
-		printf("%u bytes captured\n", header->caplen);
+		printf("\n%u bytes captured\n", header->caplen);
 		printf("\n--ethernet Header--\n");
 
 		eth_hdr = (struct ethernet_hdr *) packet;
@@ -73,12 +74,12 @@ int main(int argc, char *argv[]){
 		}
 
 		printf("\n--Ipv4 Header--\n");
-		ipv4_addr = (struct ip *) (packet + sizeof(struct ethernet_hdr));
+		ipv4_hdr = (struct ip *) (packet + sizeof(struct ethernet_hdr));
 		//for(int k=0; k<4; k++){
-		printf("src : %s\n", inet_ntoa(ipv4_addr->ip_src));
+		printf("src : %s\n", inet_ntoa(ipv4_hdr->ip_src));
 		//}
 		//for(int z=0; z<4; z++){
-		printf("dst : %s\n", inet_ntoa(ipv4_addr->ip_dst));
+		printf("dst : %s\n", inet_ntoa(ipv4_hdr->ip_dst));
 		//}
 
 		printf("\n--tcp header--\n");
@@ -87,10 +88,16 @@ int main(int argc, char *argv[]){
 		printf("dst port : %d\n", ntohs(tcp_addr->th_dport));
 
 		printf("\n--payload(data)--\n");
-		pkdata = (u_char *)(packet + sizeof(ethernet_hdr) + sizeof(struct ip) + sizeof(tcp_hdr));
-		for(int a=0; a<16; a++){
-			printf("|%02x|",pkdata[a]);
+		payload = (u_char *)(packet + sizeof(ethernet_hdr) + sizeof(struct ip) + sizeof(tcp_hdr));
+		payload_len = header->caplen - (sizeof(struct ethernet_hdr) + sizeof(struct ip) + sizeof(struct tcp_hdr));
+		printf("len: %d\n", payload_len);
+
+            	for(int a=0; a<payload_len; a++){
+			if(a<32){
+				printf("|%02x|", payload[a]);
+			}
 		}
+		printf("\n--end--\n");
 
 	}
 
