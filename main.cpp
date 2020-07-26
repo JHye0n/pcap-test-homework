@@ -73,10 +73,12 @@ int main(int argc, char *argv[]){
 		printf("src port : %d\n", ntohs(tcp_hdr->source));
 		printf("dst port : %d\n", ntohs(tcp_hdr->dest));
 
-		printf("\n--packet header--\n");
-		printf("ha..");
-
-	pcap_close(handle);
+		printf("\n--payload(data)--\n");
+		
+		for(int a=0; a<16; a++){
+			printf("%x",tcp_hdr[a]);
+		}
+		
 
 	}
 
