@@ -44,7 +44,7 @@ int main(int argc, char *argv[]){
 		struct tcp_hdr *tcp_addr;
 		const u_char *packet;
 		const u_char *payload;
-		unsigned int ether_type;
+		//unsigned int ethet_type;
 		int res = pcap_next_ex(handle, &header, &packet);
 		if(res == 0){
 			continue;
@@ -61,7 +61,9 @@ int main(int argc, char *argv[]){
 
 		ether_type = ntohs(eth_hdr->ether_type);
 		
-		if(ntohs(ether_type) == ETHERTYPE_IP){
+		if(ntohs(ether_type) != ETHERTYPE_IP){
+			return 0;
+		}
 	
 		printf("\n--ethernet header--\n");
 		for(int i=0; i<ETHER_ADDR_LEN; i++){
@@ -98,7 +100,6 @@ int main(int argc, char *argv[]){
 			printf("|%02x|", payload[a]);
 		}
 		printf("\n--end--\n");
-		}
 
 	}
 
