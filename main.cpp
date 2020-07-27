@@ -44,8 +44,8 @@ int main(int argc, char *argv[]){
 		struct tcp_hdr *tcp_addr;
 		const u_char *packet;
 		const u_char *payload;
+		unsigned int ether_type;
 		int res = pcap_next_ex(handle, &header, &packet);
-		int payload_len = 0;
 		if(res == 0){
 			continue;
 		}else if(res == -1 || res == -2){
@@ -54,9 +54,16 @@ int main(int argc, char *argv[]){
 		}
 
 		printf("\n%u bytes captured\n", header->caplen);
-		printf("\n--ethernet Header--\n");
 
 		eth_hdr = (struct ethernet_hdr *) packet;
+
+		//gilgil codeview update(0727)
+
+		ether_type = ntohs(eth_hdr->ether_type);
+		
+		if(ntohs(ether_type) == ETHERTYPE_IP){
+	
+		printf("\n--ethernet header--\n");
 		for(int i=0; i<ETHER_ADDR_LEN; i++){
 			printf("%02x:", eth_hdr->ether_dhost[i]);
 		}
@@ -64,15 +71,18 @@ int main(int argc, char *argv[]){
 		for(int j=0; j<ETHER_ADDR_LEN; j++){
 			printf("%02x:", eth_hdr->ether_shost[j]);
 		}
-
+	
 		printf("\n--Ipv4 Header--\n");
 		ipv4_hdr = (struct ip *) (packet + sizeof(struct ethernet_hdr));
-		//for(int k=0; k<4; k++){
+		//example
+
+		//char* s_ip = inet_ntoa(ipv4_hdr->ip_src);
+		//char* d_ip = inet_ntoa(ipv4_hdr->ip_dst);
+		//printf("src : %s\n", s_ip);
+		//printf("dst : %s\n", d_ip);
+
 		printf("src : %s\n", inet_ntoa(ipv4_hdr->ip_src));
-		//}
-		//for(int z=0; z<4; z++){
 		printf("dst : %s\n", inet_ntoa(ipv4_hdr->ip_dst));
-		//}
 
 		printf("\n--tcp header--\n");
 		tcp_addr = (struct tcp_hdr *)(packet + sizeof(struct ethernet_hdr) + sizeof(struct ip));
@@ -82,11 +92,13 @@ int main(int argc, char *argv[]){
 		printf("\n--payload(data)--\n");
 		payload = (u_char *)(packet + sizeof(ethernet_hdr) + sizeof(struct ip) + sizeof(tcp_hdr));
 		payload += 16;
+		
 
             	for(int a=0; a<16; a++){
 			printf("|%02x|", payload[a]);
 		}
 		printf("\n--end--\n");
+		}
 
 	}
 
