@@ -59,10 +59,8 @@ int main(int argc, char *argv[]){
 
 		//gilgil codeview update(0727)
 
-		ether_type = ntohs(eth_hdr->ether_type);
-		
-		if(ntohs(ether_type) != ETHERTYPE_IP){
-			return 0;
+		if(ntohs(eth_hdr->ether_type) != ETHERTYPE_IP){
+			return -1;
 		}
 	
 		printf("\n--ethernet header--\n");
