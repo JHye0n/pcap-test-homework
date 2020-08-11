@@ -1,4 +1,3 @@
-/* push test */
 #include <stdio.h>
 #include <pcap.h>
 #include <libnet.h>
